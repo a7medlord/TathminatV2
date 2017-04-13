@@ -168,13 +168,11 @@ namespace CloudApp.Controllers
             {
                 return _oneservice.SendEmail(Convert.ToInt64(data[0]), contex, env);
             }
-            else if (data[1] == "2")
+            if (data[1] == "2")
             {
                 return _towServices.SendEmail(Convert.ToInt64(data[0]), contex, env);
             }
-    
             return _sampleTreeServices.SendEmail(Convert.ToInt64(data[0]), contex, env);
-        
         }
 
         public JsonResult Delete(long id, int type)

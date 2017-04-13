@@ -482,9 +482,10 @@ namespace CloudApp.Controllers
 
 
             }
+
+
             ViewBag.totalprice = models.Sum(d => d.Price);
             ViewBag.totalNet = models.Sum(d => d.Net);
-
             ViewBag.totalInterprice = models.Sum(d => d.InterPrice);
             ViewBag.totalMuthmnPrice = models.Sum(d => d.MuthmnPrice);
             ViewBag.totalAduitPrice = models.Sum(d => d.AduitPrice);

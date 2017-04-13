@@ -26,7 +26,7 @@ namespace CloudApp.RepositoriesClasses
         public IEnumerable<R2Smaple> GetTrementWithCustmerAndSample(long tremntid)
         {
             throw new NotImplementedException();
-        }
+        }   
 
         public R2Smaple GetTrementWithAttachmentFiles(long treamnetid)
         {
