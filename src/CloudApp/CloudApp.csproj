@@ -36,6 +36,10 @@
     <Content Include="wwwroot\js\SampleTowCreat.js" />
     <Content Include="wwwroot\js\SampleTowEdit.js" />
     <Content Include="wwwroot\js\SmapleThreeEdit.js" />
+    <EmbeddedResource Include="wwwroot\Report\FinREqReport.rdlc" />
+    <EmbeddedResource Include="wwwroot\Report\Report1.rdlc" />
+    <EmbeddedResource Include="wwwroot\Report\Sm1Report.rdlc" />
+    <EmbeddedResource Include="wwwroot\Report\SupFinREqReport.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
@@ -94,7 +98,6 @@
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\Report\QtReport.rdlc" />
     <EmbeddedResource Include="wwwroot\Report\Sm0Report.rdlc" />
-    <EmbeddedResource Include="wwwroot\Report\Sm1Report.rdlc" />
     <EmbeddedResource Include="wwwroot\Report\Sm2Report.rdlc" />
     <EmbeddedResource Include="wwwroot\Report\SupCoReport.rdlc" />
     <EmbeddedResource Include="wwwroot\Report\SupQtReport.rdlc" />
@@ -102,9 +105,25 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\sample1attachment\" />
     <Folder Include="wwwroot\sample2attachment\" />
     <Folder Include="wwwroot\sample3attachment\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

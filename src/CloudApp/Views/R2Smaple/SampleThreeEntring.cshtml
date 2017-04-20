@@ -11,18 +11,26 @@
 
             <select asp-for="CustmerId" class="select2 form-control">
                 <option value="@ViewBag.cmsname.Id">@ViewBag.cmsname.Name</option>
-                        </select>
-                    </div>
-                </div>
+            </select>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="Scustmer" class="control-label"></label>
+            <input asp-for="Scustmer" class="form-control" />
+            <span asp-validation-for="Scustmer" class="text-danger" />
+        </div>
+    </div>
 
-                <div class="col-md-3">
+    <div class="col-md-2">
                     <div class="form-group">
                         <label asp-for="ApplicationUserId" class="control-label"></label>
                         <select asp-for="ApplicationUserId" class="select2 form-control" asp-items="ViewBag.UserId"></select>
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label asp-for="BuldingType" class="control-label"></label>
                         <div class="input-group">
@@ -32,7 +40,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label asp-for="Owner" class="control-label"></label>
                         <input asp-for="Owner" class="form-control" />

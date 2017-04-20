@@ -11,6 +11,11 @@ namespace CloudApp.Models.BusinessModel
         public Custmer Custmer { get; set; }
         [Display(Name = "العميل")]
         public long CustmerId { get; set; }
+        public BankModel BankModel { get; set; }
+        [Display(Name = "البنك")]
+        public long BankModelId { get; set; }
+        [Display(Name = "الخاص بالعميل")]
+        public string Scustmer { get; set; }
         [Display(Name = "المالك")]
         public string Owner { get; set; }
         [ Display(Name = "رقم الصك")]
@@ -45,7 +50,6 @@ namespace CloudApp.Models.BusinessModel
 
         [Display(Name = "اسباب الخضوع")]
         public string ResWland { get; set; }
-
 
         [Display(Name = "رقم القطعة /رقم الشقة")]
         public string Napartment { get; set; }
@@ -301,6 +305,16 @@ namespace CloudApp.Models.BusinessModel
         public string Approver { get; set; }
         public string Intered { get; set; }
 
+        [Display(Name = "ملاحظات")]
+        public string FinNote { get; set; }
+
+        [Display(Name = "تاريخ الاقفال المالي")]
+        [Column(TypeName = "date")]
+        public DateTime FinDateClose { get; set; } = DateTime.Now.Date;
+        [Display(Name = "قيمة الاقفال المالي")]
+        public double FinPriceClose { get; set; }
+        [Display(Name = "خالص")]
+        public bool FinPartClose { get; set; }
         public List<AttachmentForTreament> AttachmentForTreaments { get; set; }
         [Display(Name = "خــط طول")]
         public string Longtute { get; set; }

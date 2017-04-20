@@ -14,15 +14,23 @@
                 </select>
             </div>
         </div>
-
+        
         <div class="col-md-3">
+            <div class="form-group">
+                <label asp-for="Scustmer" class="control-label"></label>
+                <input asp-for="Scustmer" class="form-control" />
+                <span asp-validation-for="Scustmer" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="col-md-2">
             <div class="form-group">
                 <label asp-for="ApplicationUserId" class="control-label"></label>
                 <select asp-for="ApplicationUserId" class="select2 form-control" asp-items="ViewBag.UserId"></select>
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group">
                 <label asp-for="City" class="control-label"></label>
                 <div class="input-group">
@@ -32,7 +40,7 @@
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group">
                 <label asp-for="Gada" class="control-label"></label>
                 <div class="input-group">
@@ -283,41 +291,43 @@
         </div>
     </div>
 
-    <div class="row">
+<div class="row">
 
-        <div class="col-md-3">
-            <div class="form-group">
-                <label asp-for="East" class="control-label"></label>
-                <input asp-for="East" class="form-control" />
-                <span asp-validation-for="East" class="text-danger" />
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-group">
-                <label asp-for="EastTall" class="control-label"></label>
-                <input asp-for="EastTall" class="form-control" />
-                <span asp-validation-for="EastTall" class="text-danger" />
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-group">
-                <label asp-for="West" class="control-label"></label>
-                <input asp-for="West" class="form-control" />
-                <span asp-validation-for="West" class="text-danger" />
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-group">
-                <label asp-for="WestTall" class="control-label"></label>
-                <input asp-for="WestTall" class="form-control" />
-                <span asp-validation-for="WestTall" class="text-danger" />
-            </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="East" class="control-label"></label>
+            <input asp-for="East" class="form-control" />
+            <span asp-validation-for="East" class="text-danger" />
         </div>
     </div>
-    <div class="row">
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="EastTall" class="control-label"></label>
+            <input asp-for="EastTall" class="form-control" />
+            <span asp-validation-for="EastTall" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="West" class="control-label"></label>
+            <input asp-for="West" class="form-control" />
+            <span asp-validation-for="West" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="WestTall" class="control-label"></label>
+            <input asp-for="WestTall" class="form-control" />
+            <span asp-validation-for="WestTall" class="text-danger" />
+        </div>
+    </div>
+</div>
+    
+
+<div class="row">
         <div class="col-md-2">
             <div class="checkbox">
                 <label><input id="nex1" asp-for="IsIntered" type="checkbox">اكمال عملية الأدخال...</label>

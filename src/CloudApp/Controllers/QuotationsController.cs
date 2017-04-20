@@ -44,12 +44,12 @@ namespace CloudApp.Controllers
                Credentials = new NetworkCredential(fromAddress.Address , frompassword)};
      
             MailMessage msg = new MailMessage();
-           msg.Attachments.Add(attacher);
+            msg.Attachments.Add(attacher);
             msg.Subject = "عرض سعر عملية تثمين";
             msg.Body = "الرجاء الاطلاع علي عرض السعر ";
             msg.To.Add(toAddress);
             msg.From = fromAddress;
-           smptclints.Send(msg);
+            smptclints.Send(msg);
             
             return true;
         }
@@ -89,7 +89,7 @@ namespace CloudApp.Controllers
 
             };
 
-            local.ReportPath = _env.WebRootPath + "Report/QtReport.rdlc";
+            local.ReportPath = _env.WebRootPath + "/Report/QtReport.rdlc";
             local.EnableExternalImages = true;
             double amount = instruments.Sum(d => d.Amount);
 

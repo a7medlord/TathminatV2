@@ -67,6 +67,7 @@ namespace CloudApp.Controllers
             ViewData["City"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.City), "Value", "Value");
             ViewData["Gada"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Gada), "Value", "Value");
             ViewData["cmsname"] = cms;
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
             return View(new R2Smaple());
         }
 
@@ -139,6 +140,7 @@ namespace CloudApp.Controllers
             ViewData["City"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.City), "Value", "Value");
             ViewData["Gada"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Gada), "Value", "Value");
             ViewData["cmsname"] = r2Smaple.Custmer;
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
             return View(r2Smaple);
         }
 
@@ -222,6 +224,19 @@ namespace CloudApp.Controllers
             ViewData["InterFaces"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Interfaces), "Value", "Value");
             ViewData["azltype"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.AzlType), "Value", "Value");
             ViewData["downstair"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.DownSir), "Value", "Value");
+
+        }
+
+
+        public void EditFin(long id, double partprice, long bankid, DateTime date, bool close)
+        {
+            var row = _context.R2Smaple.SingleOrDefault(d => d.Id == id);
+            row.FinPriceClose = partprice;
+            row.BankModelId = bankid;
+            row.FinDateClose = date;
+            row.FinPartClose = close;
+            _context.Update(row);
+            _context.SaveChanges();
 
         }
     }

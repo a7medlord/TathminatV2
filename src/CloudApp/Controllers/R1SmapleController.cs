@@ -54,6 +54,7 @@ namespace CloudApp.Controllers
             ViewData["City"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.City), "Value", "Value");
             ViewData["Gada"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Gada), "Value", "Value");
             ViewData["cmsname"] = cms;
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
             return View(new R1Smaple());
         }
         
@@ -138,6 +139,8 @@ namespace CloudApp.Controllers
             ViewData["City"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.City), "Value", "Value");
             ViewData["Gada"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Gada), "Value", "Value");
             ViewData["cmsname"] = r1Smaple.Custmer;
+
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
             return View(r1Smaple);
         }
         
@@ -225,7 +228,18 @@ namespace CloudApp.Controllers
             ViewData["downstair"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.DownSir), "Value", "Value");
 
         }
-      
+
+        public void EditFin(long id, double partprice, long bankid, DateTime date, bool close)
+        {
+            var row = _context.R1Smaple.SingleOrDefault(d=>d.Id==id);
+            row.FinPriceClose = partprice;
+            row.BankModelId = bankid;
+            row.FinDateClose = date;
+            row.FinPartClose = close;
+            _context.Update(row);
+            _context.SaveChanges();
+
+        }
 
         private bool R1SmapleExists(long id)
         {

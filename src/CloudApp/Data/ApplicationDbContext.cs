@@ -44,6 +44,8 @@ namespace CloudApp.Data
 
         public DbSet<CloudApp.Models.BusinessModel.FinModel> FinModel { get; set; }
 
+        public DbSet<CloudApp.Models.BusinessModel.BankModel> BankModel { get; set; }
+
 
         
     }

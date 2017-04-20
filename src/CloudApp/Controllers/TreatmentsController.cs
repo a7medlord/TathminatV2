@@ -72,6 +72,7 @@ namespace CloudApp.Controllers
             ViewData["City"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.City), "Value", "Value");
             ViewData["Gada"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Gada), "Value", "Value");
             ViewData["cmsname"] = cms;
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
             return View(new Treatment());
         }
 
@@ -150,6 +151,7 @@ namespace CloudApp.Controllers
             ViewData["City"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.City), "Value", "Value");
             ViewData["Gada"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Gada), "Value", "Value");
             ViewData["cmsname"] = treatment.Custmer;
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
             return View(treatment);
         }
         
@@ -218,6 +220,19 @@ namespace CloudApp.Controllers
             row.IsApproved = true;
             _service.UpdateExistTreament(row);
         }
+
+        public void EditFin(long id,double partprice, long bankid ,DateTime date , bool close)
+        {
+            var row = _service.GetTrementById(id);
+            row.FinPriceClose = partprice;
+            row.BankModelId = bankid;
+            row.FinDateClose = date;
+            row.FinPartClose = close;
+            _service.UpdateExistTreament(row);
+           
+        }
+
+
         
         private bool TreatmentExists(long id)
         {

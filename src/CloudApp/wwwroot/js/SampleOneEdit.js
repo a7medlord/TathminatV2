@@ -1,4 +1,5 @@
 ﻿
+$(".select2").css("width", "100%");
 //ControlTab For Edit
 function getstattab1() {
 
@@ -32,6 +33,9 @@ function getstattab3() {
 function getstattab4() {
     if ($("#nex4").prop('checked')) {
         $(".l3").removeClass('active').addClass('completed');
+        $("#tab2-4").removeClass('active');
+        $("#tab2-5").addClass('active');
+        $(".l4").addClass('active');
 
     }
 }
@@ -39,7 +43,7 @@ function getstattab4() {
 function getstattab5() {
     if ($("#nex5").prop('checked')) {
         $(".l4").removeClass('active').addClass('completed');
-
+  
     }
 }
 

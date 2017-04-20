@@ -1,28 +1,783 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CloudApp.Data;
+using CloudApp.HelperClass;
 using CloudApp.Models;
 using CloudApp.Models.BusinessModel;
+using CloudApp.Models.ManpulateModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Reporting.WebForms;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CloudApp.Controllers
 {
+
     public class FinModelsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private UserManager<ApplicationUser> _userManager;
-        public FinModelsController(ApplicationDbContext context, UserManager<ApplicationUser> user)
+        private IHostingEnvironment _env;
+       
+        public FinModelsController(ApplicationDbContext context, UserManager<ApplicationUser> user , IHostingEnvironment env)
         {
             _context = context;
             _userManager = user;
+            _env = env;
         }
 
 
+
+        public async Task<IActionResult> FinFilter(DateTime? date1 = null, DateTime? date2 = null, long? cms = null)
+        {
+
+            ViewData["CustmerId"] = new SelectList(_context.Custmer, "Id", "Name");
+            ViewData["BankId"] = new SelectList(_context.BankModel, "AccountNumber", "Name");
+            if (!date1.HasValue)
+            {
+                date1 = DateTime.Now.Date;
+            }
+
+            if (!date2.HasValue)
+            {
+                date2 = DateTime.Now.Date;
+            }
+            if (!cms.HasValue)
+            {
+                cms = _context.Custmer.FirstOrDefault()?.Id;
+            }
+
+            List<FinCloseModel> models = new List<FinCloseModel>();
+
+            foreach (var treatment in await _context.Treatment.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.Tbuild,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SNum,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 1
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R1Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.AqarType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SukNumber,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 2
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R2Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.BuldingType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SukNumber,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 3
+
+                    });
+                }
+            }
+
+
+
+                     
+            return View(models);
+        }
+
+        public List<Treatment> GlobelFilter()
+        {
+          
+            var parameter = new SqlParameter("p1", 1);
+            var rows = _context.Treatment.FromSql("SELECT  Custmer.Name, Tbuild, City,Gada , Owner ,SNum ,Scustmer,Price FROM Treatment " +
+                                                "INNER JOIN Custmer ON Treatment.CustmerId = Custmer.Id WHERE CustmerId = @p1" , parameter).ToList();
+         
+            return rows;
+        }
+        
+
+
+
+
+
+
+
+      
+
+        
+
+
+
+
+
+
+    
+        public async Task<IActionResult> FinCloseforReq(DateTime? date1 = null, DateTime? date2 = null, long? cms = null)
+        {
+            ViewData["CustmerId"] = new SelectList(_context.Custmer, "Id", "Name");
+            ViewData["BankId"] = new SelectList(_context.BankModel, "AccountNumber", "Name");
+            if (!date1.HasValue)
+            {
+                date1 = DateTime.Now.Date;
+            }
+
+            if (!date2.HasValue)
+            {
+                date2 = DateTime.Now.Date;
+            }
+            if (!cms.HasValue)
+            {
+                cms = _context.Custmer.FirstOrDefault()?.Id;
+            }
+
+            List<FinCloseModel> models = new List<FinCloseModel>();
+
+            foreach (var treatment in await _context.Treatment.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false  && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.Tbuild,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SNum,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 1
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R1Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.AqarType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SukNumber,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 2
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R2Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.BuldingType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SukNumber,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 3
+
+                    });
+                }
+            }
+
+            return View(models);
+        }
+
+        public async Task<IActionResult> FinReqReport(DateTime? date1 = null, DateTime? date2 = null , long? cms = null , string bank=null)
+        {
+            ViewData["CustmerId"] = new SelectList(_context.Custmer, "Id", "Name");
+            if (!date1.HasValue)
+            {
+                date1 = DateTime.Now.Date;
+            }
+
+            if (!date2.HasValue)
+            {
+                date2 = DateTime.Now.Date;
+            }
+            if (!cms.HasValue)
+            {
+                cms = _context.Custmer.FirstOrDefault()?.Id;
+            }
+            List<HelpBank> banks = new List<HelpBank>();
+            if (bank!=null)
+            {
+
+              
+                string[] tag1 = bank.Split(',');
+
+                for (int i = 0; i < tag1.Length - 1; i++)
+                {
+                    string[] tag2 = tag1[i].Split(';');
+                    string account = tag2[0];
+                    string bankname = tag2[1];
+                    banks.Add(new HelpBank(){BankAccount = account ,BankName = bankname, FinCloseModelCmsId =Convert.ToInt64(cms)});
+
+                }
+
+
+            }
+
+            List<FinCloseModel> models = new List<FinCloseModel>();
+
+            foreach (var treatment in await _context.Treatment.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId ==cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+                    models.Add(new FinCloseModel()
+                    {
+                      
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.Tbuild,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SNum,
+                        FinPriceClose = treatment.FinPriceClose,   
+                        Type = 1
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R1Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+
+                        
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.AqarType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SukNumber,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 2
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R2Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+                    models.Add(new FinCloseModel()
+                    {
+                        
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.BuldingType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinDate = treatment.DateOfBegin.ToShortDateString(),
+                        SNum = treatment.SukNumber,
+                        FinPriceClose = treatment.FinPriceClose,
+                        Type = 3
+                    });
+                }
+            }
+
+
+
+            ReportDataSource reportDataSource = new ReportDataSource();
+            ReportDataSource bankDataSource = new ReportDataSource();
+
+            // Qoution Report
+            reportDataSource.Name = "DataSetFinreq";
+            reportDataSource.Value = models;
+
+            bankDataSource.Name = "DataSetHelpBank";
+            bankDataSource.Value = banks;
+
+
+
+            LocalReport local = new LocalReport();
+            local.DataSources.Add(reportDataSource);
+
+            local.SubreportProcessing += delegate (object sender, SubreportProcessingEventArgs args)
+            {
+                args.DataSources.Add(bankDataSource);
+
+            };
+
+            local.ReportPath = _env.WebRootPath + "/Report/FinREqReport.rdlc";
+            local.EnableExternalImages = true;
+
+            decimal totalprice = (decimal) models.Sum(d => d.Price);
+             ToWord toWord = new ToWord(totalprice, new CurrencyInfo(CurrencyInfo.Currencies.SaudiArabia));
+
+            ReportParameter[] parameters = {
+                new ReportParameter("num",toWord.ConvertToArabic()),
+                new ReportParameter("clint",_context.Custmer.SingleOrDefault(d=>d.Id == cms)?.FromClint),
+                new ReportParameter("cmsid" , cms.ToString()), 
+
+            };
+
+            local.SetParameters(parameters);
+
+            byte[] rendervalue = local.Render("Pdf", "");
+
+            return File(rendervalue, "application/pdf");
+        }
+
+
+        public async Task<IActionResult> FinCloseReport(DateTime? date1 = null, DateTime? date2 = null)
+        {
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
+            if (!date1.HasValue)
+            {
+                date1 = DateTime.Now.Date;
+            }
+
+            if (!date2.HasValue)
+            {
+                date2 = DateTime.Now.Date;
+            }
+
+            List<FinCloseModel> models = new List<FinCloseModel>();
+
+            foreach (var treatment in await _context.Treatment.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.Tbuild,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinPriceClose = treatment.FinPriceClose,
+                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        Type = 1
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R1Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.AqarType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinPriceClose = treatment.FinPriceClose,
+                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        Type = 2
+
+                    });
+                }
+            }
+
+            foreach (var treatment in await _context.R2Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.BuldingType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinPriceClose = treatment.FinPriceClose,
+                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        Type = 3
+
+                    });
+                }
+            }
+            ViewBag.totalpartprice = models.Sum(d => d.FinPriceClose);
+            ViewBag.totalprice = models.Sum(d => d.Price);
+
+            return View(models);
+        }
+        public async Task<IActionResult> FinClose(DateTime? date1 = null, DateTime? date2 = null)
+        {
+            ViewData["BankId"] = new SelectList(_context.BankModel, "Id", "Name");
+            if (!date1.HasValue)
+            {
+                date1 = DateTime.Now.Date;
+            }
+
+            if (!date2.HasValue)
+            {
+                date2 = DateTime.Now.Date;
+            }
+
+            List<FinCloseModel> models = new List<FinCloseModel>();
+
+            foreach (var treatment in await _context.Treatment.Include(s=>s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false).ToListAsync())
+            {
+                if (treatment != null)
+                {
+                 
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada ,
+                        Tbuild = treatment.Tbuild,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinPriceClose = treatment.FinPriceClose,
+                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì":"Œ«·’",
+                        Type = 1
+
+                    });
+                }
+            }
+            foreach (var treatment in await _context.R1Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.AqarType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinPriceClose = treatment.FinPriceClose,
+                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        Type = 2
+
+                    });
+                }
+            }
+
+            foreach (var treatment in await _context.R2Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false).ToListAsync())
+            {
+                if (treatment != null)
+                {
+
+
+                    models.Add(new FinCloseModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        Scustmer = treatment.Scustmer,
+                        Bank = treatment.BankModel.Name,
+                        Place = treatment.City + " - " + treatment.Gada,
+                        Tbuild = treatment.BuldingType,
+                        Price = treatment.Price,
+                        Id = treatment.Id,
+                        Owner = treatment.Owner,
+                        FinPriceClose = treatment.FinPriceClose,
+                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        Type = 3
+
+                    });
+                }
+            }
+
+            return View(models);
+        }
+
+        public async Task<IActionResult> GetInvoice(DateTime? date1 = null, DateTime? date2 = null, long? cms = null, string type = null)
+        {
+            ViewData["CustmerId"] = new SelectList(_context.Custmer, "Id", "Name");
+            if (!date1.HasValue)
+            {
+                date1 = DateTime.Now.Date;
+            }
+
+            if (!date2.HasValue)
+            {
+                date2 = DateTime.Now.Date;
+            }
+            if (!cms.HasValue)
+            {
+                cms = _context.Custmer.FirstOrDefault()?.Id;
+            }
+            if (type ==null)
+            {
+                type = "«· ﬁÌÌ„ «·⁄ﬁ«—Ì";
+            }
+
+
+            List<InvoiceModel> models  = new List<InvoiceModel>();
+
+            foreach (var treatment in await _context.Treatment.Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+                    models.Add(new InvoiceModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
+                        Price = treatment.Price,
+                        SCustmer = treatment.Scustmer,
+                        ServiceType = type,
+                        Descrip = treatment.Tbuild + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+
+                    });
+                }
+            }
+
+
+            foreach (var treatment in await _context.R1Smaple.Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+                    models.Add(new InvoiceModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
+                        Price = treatment.Price,
+                        SCustmer = treatment.Scustmer,
+                        ServiceType = type,
+                        Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+
+                    });
+                }
+            }
+
+            foreach (var treatment in await _context.R2Smaple.Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+                    models.Add(new InvoiceModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
+                        Price = treatment.Price,
+                        SCustmer = treatment.Scustmer,
+                        ServiceType = type,
+                        Descrip = treatment.BuldingType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+
+                    });
+                }
+            }
+
+            ViewBag.totalprice = models.Sum(d => d.Price);
+
+            return View(models);
+        }
+
+
+        public async Task<IActionResult> GetInvoiceReport(DateTime? date1 = null, DateTime? date2 = null, long? cms = null,string type = null)
+        {
+            ViewData["CustmerId"] = new SelectList(_context.Custmer, "Id", "Name");
+            if (!date1.HasValue)
+            {
+                date1 = DateTime.Now.Date;
+            }
+
+            if (!date2.HasValue)
+            {
+                date2 = DateTime.Now.Date;
+            }
+            if (!cms.HasValue)
+            {
+                cms = _context.Custmer.FirstOrDefault()?.Id;
+            }
+            if (type == null)
+            {
+                type = "«· ﬁÌÌ„ «·⁄ﬁ«—Ì";
+            }
+
+            List<InvoiceModel> models = new List<InvoiceModel>();
+
+            foreach (var treatment in await _context.Treatment.Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+                    models.Add(new InvoiceModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
+                        Price = treatment.Price,
+                        SCustmer = treatment.Scustmer,
+                        ServiceType = type,
+                        Id = treatment.Id
+                        ,
+                        Descrip = treatment.Tbuild + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+
+                    });
+                }
+            }
+
+
+            foreach (var treatment in await _context.R1Smaple.Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+                    models.Add(new InvoiceModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
+                        Price = treatment.Price,
+                        SCustmer = treatment.Scustmer,
+                        ServiceType = type,
+                        Id = treatment.Id
+                        ,
+                        Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+
+                    });
+                }
+            }
+
+            foreach (var treatment in await _context.R2Smaple.Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.CustmerId == cms).ToListAsync())
+            {
+                if (treatment != null)
+                {
+                    models.Add(new InvoiceModel()
+                    {
+                        Custmer = treatment.Custmer.Name,
+                        DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
+                        Price = treatment.Price,
+                        SCustmer = treatment.Scustmer,
+                        ServiceType = type,
+                        Id = treatment.Id
+                        ,
+                        Descrip = treatment.BuldingType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+
+                    });
+                }
+            }
+
+
+            ReportDataSource reportDataSource = new ReportDataSource();
+
+
+            // Qoution Report
+            reportDataSource.Name = "DataSet1Invoice";
+
+            reportDataSource.Value = models;
+
+            LocalReport local = new LocalReport();
+            local.DataSources.Add(reportDataSource);
+
+            local.ReportPath = _env.WebRootPath + "/Report/Report1.rdlc";
+            local.EnableExternalImages = true;
+    
+
+           // ToWord toWord = new ToWord((decimal)amount, new CurrencyInfo(CurrencyInfo.Currencies.SaudiArabia));
+     
+
+            byte[] rendervalue = local.Render("Pdf", "");
+
+            return  File(rendervalue, "application/pdf"); 
+        }
 
         // GET: FinModels
         public async Task<IActionResult> GetEmployee(DateTime? date1 = null, DateTime? date2 = null , string emp=null)

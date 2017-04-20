@@ -30,7 +30,9 @@ function getstattab3() {
 function getstattab4() {
     if ($("#nex4").prop('checked')) {
         $(".l3").removeClass('active').addClass('completed');
-
+        $("#tab2-4").removeClass('active');
+        $("#tab2-5").addClass('active');
+        $(".l4").addClass('active');
     }
 }
 
@@ -356,4 +358,35 @@ $("#MeterPriceCars").focusout(function () {
 $("#MeterPriceothers").focusout(function () {
     var value = $("#AreaOthers").val() * $("#MeterPriceothers").val();
     $("#Totalothers").val(value);
+});
+
+$("#LastTaqeem").focusin(function () {
+    var areatotal = parseInt($("#AreaEarth").val()) +
+        parseInt($("#AreaQabo").val()) +
+        parseInt($("#AreaDorEarth").val()) +
+        parseInt($("#AreaFirstDoor").val()) +
+        parseInt($("#AreareptDoor").val()) +
+        parseInt($("#AreaApnedxEarth").val()) +
+        parseInt($("#AreaApendxup").val()) +
+        parseInt($("#AreaSwar").val()) +
+        parseInt($("#Areagarden").val()) +
+        parseInt($("#AreaSwimingpool").val()) +
+        parseInt($("#AreaCars").val()) +
+        parseInt($("#AreaOthers").val());
+
+    var metertotal = parseInt($("#MeterPriceEarh").val()) +
+        parseInt($("#MeterPriceQabo").val()) +
+        parseInt($("#MeterPriceDorEarth").val()) +
+        parseInt($("#MeterPriceFirstDoor").val()) +
+        parseInt($("#MeterPriceReptDoor").val()) +
+        parseInt($("#MeterPriceApendexErth").val()) +
+        parseInt($("#MeterPriceapendxup").val()) +
+        parseInt($("#MeterPriceAsawr").val()) +
+        parseInt($("#MeterPricegarden").val()) +
+        parseInt($("#MeterPriceswiminpoo").val()) +
+        parseInt($("#MeterPriceCars").val()) +
+        parseInt($("#MeterPriceothers").val());
+
+    var total = areatotal * metertotal;
+    $("#LastTaqeem").val(total);
 });
