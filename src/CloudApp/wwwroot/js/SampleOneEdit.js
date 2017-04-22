@@ -30,6 +30,7 @@ function getstattab3() {
         $(".l3").addClass('active');
     }
 }
+
 function getstattab4() {
     if ($("#nex4").prop('checked')) {
         $(".l3").removeClass('active').addClass('completed');
