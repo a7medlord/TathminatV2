@@ -13,19 +13,20 @@
         <div class="row">
             
 
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="control-label">العميل</label>
                 <select id="cms" asp-items="ViewBag.CustmerId" class="select2 form-control" >  </select>
             </div>
-
-            <div class="col-md-3">
+            
+            
+            <div class="col-md-4">
                 <label class="control-label">من</label>
                 <div id="date-popup" class="input-group date">
                     <input id="date1" type="text" data-format="D, dd MM yyyy" class="form-control">
                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="control-label">الي</label>
 
                 <div id="date-popup1" class="input-group date">
@@ -33,19 +34,43 @@
                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 </div>
             </div>
+        </div>
+            <div class="row">
+                 
+                <div class="col-md-4">
+                    <label class="control-label">نوع العقار </label>
+                    <select id="aqartype" class="select2 form-control" asp-items="ViewBag.aqartype"></select>
+                </div>
+            
+                <div class="col-md-4">
+                    <label class="control-label"> المدينة </label>
+                    <select id="city" class="select2 form-control" asp-items="ViewBag.City"></select>
+                </div>
             
             
+                <div class="col-md-4">
+                    <label class="control-label"> الحي </label>
+                    <select id="gada" class="select2 form-control" asp-items="ViewBag.Gada"></select>
+                </div>
 
+            </div>
+
+           
+        
+            
+          
+
+      
+            
+            
+        <div class="row">
 
             <div class="col-md-8">
                 <br/>
                 <a id="btn_filter" class="btn btn-primary">
                     فــرز
                 </a>
-                
-                <a id="print" target="_blank" class="btn btn-danger">
-                    طباعة
-                </a>
+               
 
             </div>
 
@@ -93,12 +118,6 @@
                                 @Html.DisplayNameFor(model => model.Place)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.SNum)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.FinDate)
-                            </th>
-                            <th>
                                 @Html.DisplayNameFor(model => model.Price)
                             </th>
                         
@@ -129,12 +148,6 @@
                                 </td>
 
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.SNum)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FinDate)
-                                </td>
-                                <td>
                                     @Html.DisplayFor(modelItem => item.Price)
                                 </td>
                                 
@@ -161,13 +174,18 @@
     }
 
     <script>
-     
-  
 
+       
         $("#btn_filter").click(function() {
 
-            location.href = "/FinModels/FinFilter?date1=" + $("#date1").val() + "&date2=" + $("#date2").val() + "&cms=" + $("#cms").val();
+            location.href = "/FinModels/FinFilter?date1=" + $("#date1").val() + "&date2=" + $("#date2").val() + "&cms=" + $("#cms").val() + "&aqartype=" + $("#aqartype").val() + "&city=" + $("#city").val() + "&gada=" + $("#gada").val();
         });
+
+
+      
+
+
+
 
 
 

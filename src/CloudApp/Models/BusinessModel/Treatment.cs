@@ -38,7 +38,7 @@ namespace CloudApp.Models.BusinessModel
         [Display(Name = "رقم المخطط")]
         public string Plane { get; set; }
         [Display(Name = "نوع العقار")]
-        public string Tbuild { get; set; }
+        public string AqarType { get; set; }
 
         [Display(Name = "قيمة الاتعاب")]
         public double Price { get; set; }

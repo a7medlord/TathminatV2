@@ -45,6 +45,7 @@ namespace CloudApp.Models.BusinessModel
 
         [Display(Name = "نوع العقار")]
         public string AqarType { get; set; }
+
         [Display(Name = "قيمة الاتعاب")]
         public double Price { get; set; }
 
@@ -59,9 +60,6 @@ namespace CloudApp.Models.BusinessModel
 
         [Display(Name = "حالة المبني")]
         public string BulState { get; set; }
-
-        [Display(Name = "نوع المبني")]
-        public string BuldingType { get; set; }
 
         [Display(Name = "شاغلية المبني")]
         public string BuldinIsNull { get; set; }

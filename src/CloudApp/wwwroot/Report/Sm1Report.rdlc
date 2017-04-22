@@ -393,7 +393,7 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>=Fields!BuldingType.Value</Value>
+                        <Value>=Fields!AqarType.Value</Value>
                         <Style>
                           <FontWeight>Normal</FontWeight>
                         </Style>
@@ -12851,8 +12851,8 @@
           <DataField>BuldingNumber</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="BuldingType">
-          <DataField>BuldingType</DataField>
+        <Field Name="AqarType">
+          <DataField>AqarType</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="BuldinIsNull">

@@ -199,14 +199,14 @@ namespace CloudApp.Controllers
             if (pric.City == "الكل")
             {
             var dat1 =    FilterExpr1(treatment =>
-                    treatment.Tbuild == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
+                    treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.Gada == pric.Gada);
               var data2 =  FilterExpr2(treatment =>
                     treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.Gada == pric.Gada);
 
                var data3 = FilterExpr3(treatment =>
-                    treatment.BuldingType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
+                    treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To  && treatment.Gada == pric.Gada);
 
                 reslt.AddRange(dat1);
@@ -217,13 +217,13 @@ namespace CloudApp.Controllers
             if (pric.Gada == "الكل")
             {
               var data1 =  FilterExpr1(treatment =>
-                    treatment.Tbuild == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
+                    treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.City == pric.City );
               var data2 =  FilterExpr2(treatment =>
                     treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.City == pric.City);
               var data3 =  FilterExpr3(treatment =>
-                    treatment.BuldingType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
+                    treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.City == pric.City);
 
                 reslt.AddRange(data1);
@@ -234,13 +234,13 @@ namespace CloudApp.Controllers
             else
             {
                 var data1 = FilterExpr1(treatment =>
-                    treatment.Tbuild == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
+                    treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.City == pric.City && treatment.Gada == pric.Gada);
                 var data2 = FilterExpr2(treatment =>
                     treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.City == pric.City && treatment.Gada == pric.Gada);
                 var data3 = FilterExpr3(treatment =>
-                    treatment.BuldingType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
+                    treatment.AqarType == pric.TypeOfAqar && treatment.DateOfBegin >= pric.From &&
                     treatment.DateOfBegin <= pric.To && treatment.City == pric.City && treatment.Gada == pric.Gada);
 
                 reslt.AddRange(data1);
@@ -262,7 +262,7 @@ namespace CloudApp.Controllers
             {
                 PriceMapModelView item = new PriceMapModelView()
                 {
-                    TypeOfAqar = treatment.Tbuild,
+                    TypeOfAqar = treatment.AqarType,
                     Type = 1,
                     Id = treatment.Id,
                     Area = treatment.Area,
@@ -316,7 +316,7 @@ namespace CloudApp.Controllers
             {
                 PriceMapModelView item = new PriceMapModelView()
                 {
-                    TypeOfAqar = treatment.BuldingType,
+                    TypeOfAqar = treatment.AqarType,
                     Type = 3,
                     Id = treatment.Id,
                     Area = "لا يوجد",

@@ -12,7 +12,7 @@ namespace CloudApp.Models.BusinessModel
         public long Id { get; set; }
 
         [Display(Name = "نوع العقار")]
-        public string BuldingType { get; set; }
+        public string AqarType { get; set; }
         [Display(Name = "مالك العقار")]
         public string Owner { get; set; }
         [Display(Name = "الخاص بالعميل")]
@@ -152,13 +152,13 @@ namespace CloudApp.Models.BusinessModel
 
         // حاله المبني
         [Display(Name = "رديئ")]
-        public bool BuldingTypeBad { get; set; }
+        public bool AqarTypeBad { get; set; }
 
         [Display(Name = "جيد")]
-        public bool BuldingTypeGood { get; set; }
+        public bool AqarTypeGood { get; set; }
 
         [Display(Name = "ممتاز")]
-        public bool BuldingTypeExlant { get; set; }
+        public bool AqarTypeExlant { get; set; }
 
 
 

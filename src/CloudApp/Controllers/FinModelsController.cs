@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -33,8 +33,11 @@ namespace CloudApp.Controllers
 
 
 
-        public async Task<IActionResult> FinFilter(DateTime? date1 = null, DateTime? date2 = null, long? cms = null)
+        public IActionResult FinFilter(DateTime? date1 = null, DateTime? date2 = null, long? cms = null , string aqartype = null , string city = null , string gada = null )
         {
+            ViewData["City"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.City), "Value", "Value");
+            ViewData["Gada"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Gada), "Value", "Value");
+            ViewData["aqartype"] = new SelectList(_context.Flag.Where(d => d.FlagValue == FlagsName.Aqar), "Value", "Value");
 
             ViewData["CustmerId"] = new SelectList(_context.Custmer, "Id", "Name");
             ViewData["BankId"] = new SelectList(_context.BankModel, "AccountNumber", "Name");
@@ -51,39 +54,27 @@ namespace CloudApp.Controllers
             {
                 cms = _context.Custmer.FirstOrDefault()?.Id;
             }
+            if (aqartype == null)
+            {
+                aqartype = "ÿßŸÑŸÉŸÑ";
+            }
+            if (city==null)
+            {
+                city = "ÿßŸÑŸÉŸÑ";
+            }
+            if (gada == null)
+            {
+                gada = "ÿßŸÑŸÉŸÑ";
+            }
+
 
             List<FinCloseModel> models = new List<FinCloseModel>();
 
-            foreach (var treatment in await _context.Treatment.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            foreach (var treatment in  GlobelFilter(cms.ToString(),aqartype ,city ,gada))
             {
                 if (treatment != null)
                 {
-
-                    models.Add(new FinCloseModel()
-                    {
-                        Custmer = treatment.Custmer.Name,
-                        Scustmer = treatment.Scustmer,
-                        Bank = treatment.BankModel.Name,
-                        Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.Tbuild,
-                        Price = treatment.Price,
-                        Id = treatment.Id,
-                        Owner = treatment.Owner,
-                        FinDate = treatment.DateOfBegin.ToShortDateString(),
-                        SNum = treatment.SNum,
-                        FinPriceClose = treatment.FinPriceClose,
-                        Type = 1
-
-                    });
-                }
-            }
-            foreach (var treatment in await _context.R1Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
-            {
-                if (treatment != null)
-                {
-
-
-                    models.Add(new FinCloseModel()
+                    FinCloseModel row = new FinCloseModel()
                     {
                         Custmer = treatment.Custmer.Name,
                         Scustmer = treatment.Scustmer,
@@ -93,72 +84,158 @@ namespace CloudApp.Controllers
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
-                        FinDate = treatment.DateOfBegin.ToShortDateString(),
-                        SNum = treatment.SukNumber,
-                        FinPriceClose = treatment.FinPriceClose,
-                        Type = 2
-
-                    });
-                }
-            }
-            foreach (var treatment in await _context.R2Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
-            {
-                if (treatment != null)
-                {
-
-
-                    models.Add(new FinCloseModel()
-                    {
-                        Custmer = treatment.Custmer.Name,
-                        Scustmer = treatment.Scustmer,
-                        Bank = treatment.BankModel.Name,
-                        Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.BuldingType,
-                        Price = treatment.Price,
-                        Id = treatment.Id,
-                        Owner = treatment.Owner,
-                        FinDate = treatment.DateOfBegin.ToShortDateString(),
-                        SNum = treatment.SukNumber,
-                        FinPriceClose = treatment.FinPriceClose,
-                        Type = 3
-
-                    });
+                    
+                        Type = 1
+                    };
+                    models.Add(row);
                 }
             }
 
 
 
-                     
+            #region Tables for R1 and R2
+            //foreach (var treatment in await _context.R1Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            //{
+            //    if (treatment != null)
+            //    {
+
+
+            //        models.Add(new FinCloseModel()
+            //        {
+            //            Custmer = treatment.Custmer.Name,
+            //            Scustmer = treatment.Scustmer,
+            //            Bank = treatment.BankModel.Name,
+            //            Place = treatment.City + " - " + treatment.Gada,
+            //            Tbuild = treatment.AqarType,
+            //            Price = treatment.Price,
+            //            Id = treatment.Id,
+            //            Owner = treatment.Owner,
+            //            FinDate = treatment.DateOfBegin.ToShortDateString(),
+            //            SNum = treatment.SukNumber,
+            //            FinPriceClose = treatment.FinPriceClose,
+            //            Type = 2
+
+            //        });
+            //    }
+            //}
+            //foreach (var treatment in await _context.R2Smaple.Include(s => s.BankModel).Include(d => d.Custmer).Where(d => d.DateOfBegin >= date1 && d.DateOfBegin <= date2 && d.IsUnlockFin && d.FinPartClose == false && d.CustmerId == cms).ToListAsync())
+            //{
+            //    if (treatment != null)
+            //    {
+
+
+            //        models.Add(new FinCloseModel()
+            //        {
+            //            Custmer = treatment.Custmer.Name,
+            //            Scustmer = treatment.Scustmer,
+            //            Bank = treatment.BankModel.Name,
+            //            Place = treatment.City + " - " + treatment.Gada,
+            //            Tbuild = treatment.AqarType,
+            //            Price = treatment.Price,
+            //            Id = treatment.Id,
+            //            Owner = treatment.Owner,
+            //            FinDate = treatment.DateOfBegin.ToShortDateString(),
+            //            SNum = treatment.SukNumber,
+            //            FinPriceClose = treatment.FinPriceClose,
+            //            Type = 3
+
+            //        });
+            //    }
+            //}
+
+            #endregion
+
+
+
             return View(models);
         }
 
-        public List<Treatment> GlobelFilter()
+        public List<Treatment> GlobelFilter(string cms , string aqartype, string city, string gada)
         {
-          
-            var parameter = new SqlParameter("p1", 1);
-            var rows = _context.Treatment.FromSql("SELECT  Custmer.Name, Tbuild, City,Gada , Owner ,SNum ,Scustmer,Price FROM Treatment " +
-                                                "INNER JOIN Custmer ON Treatment.CustmerId = Custmer.Id WHERE CustmerId = @p1" , parameter).ToList();
-         
+
+            string baseSqlString = "SELECT * FROM Treatment ";
+            string query = $"{baseSqlString} {AllWhereCluse(cms, aqartype, city,gada ) } ";
+
+            var rows = _context.Treatment.FromSql(query).Include(d => d.Custmer).Include(d=>d.BankModel).ToList();
             return rows;
         }
-        
+
+        static string AllWhereCluse(string cms, string aqartype, string city, string gada)
+        {
+            string cmswhere = $"CustmerId = {cms}";
+
+            string aqartypewhere = $"AqarType = N'{aqartype}' ";
+
+            string citywhere = $"city = N'{city}'";
+
+            string gadawhere = $"Gada = N'{gada}'";
+
+
+            string lastwhere = null;
+            string where = "where ";
+
+            int count = 0;
+
+
+            if (cms != "ÿßŸÑŸÉŸÑ")
+            {
+                count = 1;
+                lastwhere += where+ cmswhere;
+            
+            }
+
+            if (aqartype != "ÿßŸÑŸÉŸÑ")
+            {
+                if (count == 1)
+                {
+                    lastwhere += " AND " + aqartypewhere;
+                    count = 1;
+                }
+                else
+                {
+                    lastwhere += where+ aqartypewhere;
+                    count = 1;
+                }
+            }
+
+            if (city != "ÿßŸÑŸÉŸÑ")
+            {
+                if (count == 1)
+                {
+                    lastwhere += " AND " + citywhere;
+                    count = 1;
+                }
+                else
+                {
+                    lastwhere += where + citywhere;
+                    count = 1;
+                }
+
+            }
+
+
+            if (gada != "ÿßŸÑŸÉŸÑ")
+            {
+
+                if (count == 1)
+                {
+                    lastwhere += " AND " + gadawhere;
+                }
+                else
+                {
+                    lastwhere += where+ gadawhere;
+                }
+
+            }
+            return lastwhere;
+
+        }
 
 
 
 
 
 
-
-      
-
-        
-
-
-
-
-
-
-    
         public async Task<IActionResult> FinCloseforReq(DateTime? date1 = null, DateTime? date2 = null, long? cms = null)
         {
             ViewData["CustmerId"] = new SelectList(_context.Custmer, "Id", "Name");
@@ -190,7 +267,7 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.Tbuild,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
@@ -238,7 +315,7 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.BuldingType,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
@@ -303,7 +380,7 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.Tbuild,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
@@ -353,7 +430,7 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.BuldingType,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
@@ -435,12 +512,12 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.Tbuild,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
                         FinPriceClose = treatment.FinPriceClose,
-                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        FinPartClose = treatment.FinPartClose == false ? "√å√í√Ü√≠" : "√é√á√°√ï",
                         Type = 1
 
                     });
@@ -463,7 +540,7 @@ namespace CloudApp.Controllers
                         Id = treatment.Id,
                         Owner = treatment.Owner,
                         FinPriceClose = treatment.FinPriceClose,
-                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        FinPartClose = treatment.FinPartClose == false ? "√å√í√Ü√≠" : "√é√á√°√ï",
                         Type = 2
 
                     });
@@ -482,12 +559,12 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.BuldingType,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
                         FinPriceClose = treatment.FinPriceClose,
-                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        FinPartClose = treatment.FinPartClose == false ? "√å√í√Ü√≠" : "√é√á√°√ï",
                         Type = 3
 
                     });
@@ -524,12 +601,12 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada ,
-                        Tbuild = treatment.Tbuild,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
                         FinPriceClose = treatment.FinPriceClose,
-                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì":"Œ«·’",
+                        FinPartClose = treatment.FinPartClose == false ? "√å√í√Ü√≠":"√é√á√°√ï",
                         Type = 1
 
                     });
@@ -552,7 +629,7 @@ namespace CloudApp.Controllers
                         Id = treatment.Id,
                         Owner = treatment.Owner,
                         FinPriceClose = treatment.FinPriceClose,
-                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        FinPartClose = treatment.FinPartClose == false ? "√å√í√Ü√≠" : "√é√á√°√ï",
                         Type = 2
 
                     });
@@ -571,12 +648,12 @@ namespace CloudApp.Controllers
                         Scustmer = treatment.Scustmer,
                         Bank = treatment.BankModel.Name,
                         Place = treatment.City + " - " + treatment.Gada,
-                        Tbuild = treatment.BuldingType,
+                        Tbuild = treatment.AqarType,
                         Price = treatment.Price,
                         Id = treatment.Id,
                         Owner = treatment.Owner,
                         FinPriceClose = treatment.FinPriceClose,
-                        FinPartClose = treatment.FinPartClose == false ? "Ã“∆Ì" : "Œ«·’",
+                        FinPartClose = treatment.FinPartClose == false ? "√å√í√Ü√≠" : "√é√á√°√ï",
                         Type = 3
 
                     });
@@ -604,7 +681,7 @@ namespace CloudApp.Controllers
             }
             if (type ==null)
             {
-                type = "«· ﬁÌÌ„ «·⁄ﬁ«—Ì";
+                type = "√á√°√ä√û√≠√≠√£ √á√°√ö√û√á√ë√≠";
             }
 
 
@@ -621,8 +698,8 @@ namespace CloudApp.Controllers
                         Price = treatment.Price,
                         SCustmer = treatment.Scustmer,
                         ServiceType = type,
-                        Descrip = treatment.Tbuild + " - " + treatment.City + " - " + treatment.Gada +
-                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+                        Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - √£√ö√á√£√°√â √ë√û√£ " + treatment.Id
 
                     });
                 }
@@ -641,7 +718,7 @@ namespace CloudApp.Controllers
                         SCustmer = treatment.Scustmer,
                         ServiceType = type,
                         Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
-                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+                                  " - √£√ö√á√£√°√â √ë√û√£ " + treatment.Id
 
                     });
                 }
@@ -658,8 +735,8 @@ namespace CloudApp.Controllers
                         Price = treatment.Price,
                         SCustmer = treatment.Scustmer,
                         ServiceType = type,
-                        Descrip = treatment.BuldingType + " - " + treatment.City + " - " + treatment.Gada +
-                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+                        Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - √£√ö√á√£√°√â √ë√û√£ " + treatment.Id
 
                     });
                 }
@@ -689,7 +766,7 @@ namespace CloudApp.Controllers
             }
             if (type == null)
             {
-                type = "«· ﬁÌÌ„ «·⁄ﬁ«—Ì";
+                type = "√á√°√ä√û√≠√≠√£ √á√°√ö√û√á√ë√≠";
             }
 
             List<InvoiceModel> models = new List<InvoiceModel>();
@@ -707,8 +784,8 @@ namespace CloudApp.Controllers
                         ServiceType = type,
                         Id = treatment.Id
                         ,
-                        Descrip = treatment.Tbuild + " - " + treatment.City + " - " + treatment.Gada +
-                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+                        Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - √£√ö√á√£√°√â √ë√û√£ " + treatment.Id
 
                     });
                 }
@@ -729,7 +806,7 @@ namespace CloudApp.Controllers
                         Id = treatment.Id
                         ,
                         Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
-                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+                                  " - √£√ö√á√£√°√â √ë√û√£ " + treatment.Id
 
                     });
                 }
@@ -748,8 +825,8 @@ namespace CloudApp.Controllers
                         ServiceType = type,
                         Id = treatment.Id
                         ,
-                        Descrip = treatment.BuldingType + " - " + treatment.City + " - " + treatment.Gada +
-                                  " - „⁄«„·… —ﬁ„ " + treatment.Id
+                        Descrip = treatment.AqarType + " - " + treatment.City + " - " + treatment.Gada +
+                                  " - √£√ö√á√£√°√â √ë√û√£ " + treatment.Id
 
                     });
                 }
@@ -798,7 +875,7 @@ namespace CloudApp.Controllers
                 emp = _userManager.GetUserId(User);
             }
             // intering 
-            ViewBag.Name = "·«ÌÊÃœ";
+            ViewBag.Name = "√°√á√≠√¶√å√è";
             
             var testName = _context.Users.SingleOrDefault(d => d.Id == emp);
             if (testName !=null)
@@ -966,7 +1043,7 @@ namespace CloudApp.Controllers
                     {
                         Id = treatment.Id,
                         Custmer = treatment.Custmer.Name,
-                        Tbuild = treatment.Tbuild,
+                        Tbuild = treatment.AqarType,
                         Owner = treatment.Owner,
                         DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
                         Sample = treatment.Custmer.Sample.Name,
@@ -1005,7 +1082,7 @@ namespace CloudApp.Controllers
                     {
                         Id = treatment.Id,
                         Custmer = treatment.Custmer.Name,
-                        Tbuild = treatment.BuldingType,
+                        Tbuild = treatment.AqarType,
                         Owner = treatment.Owner,
                         DateOfBegin = treatment.DateOfBegin.ToShortDateString(),
                         Sample = treatment.Custmer.Sample.Name,
@@ -1094,7 +1171,7 @@ namespace CloudApp.Controllers
 
                 models.Add(new FinModel()
              {
-                   Id = treatment.Id ,Custmer = treatment.Custmer.Name , Tbuild = treatment.Tbuild , Owner = treatment.Owner , DateOfBegin = treatment.DateOfBegin.ToShortDateString()
+                   Id = treatment.Id ,Custmer = treatment.Custmer.Name , Tbuild = treatment.AqarType, Owner = treatment.Owner , DateOfBegin = treatment.DateOfBegin.ToShortDateString()
                 ,Sample = treatment.Custmer.Sample.Name,Place = treatment.City + " " + treatment.Gada , Price = treatment.Price  , Net = treatment.Price -(inter+ treatment.MuthminPrice + adutit +approver) , InterPrice = inter , MuthmnPrice = treatment.MuthminPrice, AduitPrice = adutit , AproferPrice = approver
              });
                 
